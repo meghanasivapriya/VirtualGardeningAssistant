@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Plant Health Diagnosis</title>
+</head>
+<body>
+
+    <h1>🪴 Plant Health Diagnosis</h1>
+    <p>Upload a photo of an affected tomato or potato plant.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Analyse Plant Health</button>
+    </form>
+
+    {% if error %}
+        <p style="color: red;">{{ error }}</p>
+    {% endif %}
+
+    {% if results %}
+        <hr>
+        <h2>Diagnosis Results</h2>
+
+        <p><strong>Crop:</strong> {{ results.crop }}</p>
+        <p><strong>Possible disease:</strong> {{ results.disease|default:"No disease identified" }}</p>
+        <p><strong>API status:</strong> {{ results.status }}</p>
+
+        {% if not results.low_confidence %}
+            <p><strong>Confidence:</strong> {{ results.confidence }}%</p>
+        {% else %}
+            <p>
+                The result may be uncertain.
+                Do not rely on this diagnosis alone.
+            </p>
+        {% endif %}
+
+        {% if results.cure %}
+            <h3>Suggested Treatment</h3>
+            <p>{{ results.cure }}</p>
+        {% endif %}
+
+        {% if results.prevention %}
+            <h3>Prevention</h3>
+            <p>{{ results.prevention }}</p>
+        {% endif %}
+
+        {% if results.sprays %}
+            <h3>Recommended Sprays</h3>
+            <ul>
+                {% for spray in results.sprays %}
+                    <li>{{ spray }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <p>
+            This is an AI-generated result, not a guaranteed diagnosis.
+            Verify treatment recommendations before applying chemicals.
+        </p>
+    {% endif %}
+
+    <p><a href="{% url 'gardening_home' %}">← Back to My Plants</a></p>
+
+</body>
+</html>

@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Gardening Assistant</title>
+</head>
+<body>
+
+    <h1>🌱 Virtual Gardening Assistant</h1>
+
+    <h2>Weather</h2>
+
+    <p>Enter your city to check the weather.</p>
+
+    <form method="GET">
+        <input type="text" name="city" placeholder="Enter city name">
+        <button type="submit">Check Weather</button>
+    </form>
+
+    {% if weather %}
+    <h3>Weather for {{ weather.name }}</h3>
+
+    <p>Temperature: {{ weather.main.temp }} °C</p>
+    <p>Feels like: {{ weather.main.feels_like }} °C</p>
+    <p>Humidity: {{ weather.main.humidity }}%</p>
+    <p>Condition: {{ weather.weather.0.description }}</p>
+{% elif city %}
+    <p>Could not find weather data for "{{ city }}".</p>
+{% endif %}
+
+
+</body>
+</html>

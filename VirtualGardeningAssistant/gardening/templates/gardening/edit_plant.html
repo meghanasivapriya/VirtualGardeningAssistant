@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Plant</title>
+</head>
+<body>
+    <h1>✏️ Edit {{ plant.name }}</h1>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <p><a href="{% url 'gardening_home' %}">Cancel</a></p>
+</body>
+</html>

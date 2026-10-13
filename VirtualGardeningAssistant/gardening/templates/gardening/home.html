@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Gardening Assistant</title>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>🌱 Virtual Gardening Assistant</h1>
+
+    <div>
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }} |
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'register' %}">Register</a> |
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>
+    <p>
+    <a href="{% url 'identify_plant' %}">
+        🔍 Identify a Plant from Photo
+    </a>
+</p>
+    <!-- Weather Section -->
+    <section>
+        <h2>🌦️ Local Weather for Plant Care</h2>
+        <p>Weather near your location</p>
+
+        <div id="weather-result">
+            <p>Getting local weather...</p>
+        </div>
+    </section>
+
+    <hr>
+
+    <!-- Plants Section -->
+    <section>
+        <h2>🌿 My Plants</h2>
+
+        <p>
+            <a href="{% url 'add_plant' %}">➕ Add a Plant</a>
+        </p>
+
+        <div style="display: flex; flex-wrap: wrap; gap: 24px;">
+
+            {% for plant in plants %}
+            <div style="flex: 1 1 300px; border: 1px solid #ccc; padding: 16px;">
+
+                <h3>🌱 {{ plant.name }}</h3>
+
+                <p><strong>Species:</strong> {{ plant.species }}</p>
+                <p><strong>Planting Date:</strong> {{ plant.planting_date }}</p>
+                <p><strong>Sunlight:</strong> {{ plant.sunlight }}</p>
+                <p><strong>Watering:</strong> {{ plant.watering_frequency }}</p>
+                <p><strong>Notes:</strong> {{ plant.notes|default:"No notes added" }}</p>
+
+                <p>
+                    <a href="{% url 'edit_plant' plant.id %}">✏️ Edit</a> |
+                    <a href="{% url 'delete_plant' plant.id %}">🗑️ Delete</a>
+                </p>
+
+                <hr>
+
+                <h4>💧 Care Recommendations</h4>
+                <div id="recommendations-{{ plant.id }}">
+                    <p>Loading recommendations...</p>
+                </div>
+
+            </div>
+            {% empty %}
+                <p>No plants added yet. Add your first plant!</p>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <p><a href="{% url 'home' %}">← Back to Home</a></p>
+
+    <script>
+        if ("geolocation" in navigator) {
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const latitude = position.coords.latitude;
+                    const longitude = position.coords.longitude;
+
+                    fetch(`/gardening/weather/?lat=${latitude}&lon=${longitude}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            const weatherDiv = document.getElementById("weather-result");
+
+                            if (data.error) {
+                                weatherDiv.innerHTML = `<p>${data.error}</p>`;
+                                return;
+                            }
+
+                            weatherDiv.innerHTML = `
+                                <p><strong>Temperature:</strong> ${data.temperature} °C</p>
+                                <p><strong>Humidity:</strong> ${data.humidity}%</p>
+                                <p><strong>Condition:</strong> ${data.condition}</p>
+                            `;
+
+                            data.recommendations.forEach(item => {
+    const recommendationDiv = document.getElementById(
+        `recommendations-${item.plant_id}`
+    );
+
+    if (recommendationDiv) {
+        recommendationDiv.innerHTML = `
+            <ul>
+                ${item.tips.map(tip => `<li>${tip}</li>`).join("")}
+            </ul>
+        `;
+    }
+});
+                        })
+                        .catch(() => {
+                            document.getElementById("weather-result").innerHTML =
+                                "<p>Unable to load weather. Please try again.</p>";
+                        });
+                },
+                function() {
+                    document.getElementById("weather-result").innerHTML =
+                        "<p>Location permission is required to get local weather.</p>";
+                }
+            );
+        } else {
+            document.getElementById("weather-result").innerHTML =
+                "<p>Geolocation is not supported by this browser.</p>";
+        }
+    </script>
+
+</body>
+</html>

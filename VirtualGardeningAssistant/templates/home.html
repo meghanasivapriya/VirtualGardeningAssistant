@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Virtual Gardening Assistant</title>
+</head>
+<body>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+    <h1>🌱 Virtual Gardening Assistant</h1>
+    <div>
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }} |
+            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit">Logout</button>
+            </form>
+        {% else %}
+            <a href="{% url 'register' %}">Register</a> |
+            <a href="{% url 'login' %}">Login</a>
+        {% endif %}
+    </div>
+</div>
+    {% if user.is_authenticated %}
+        <h2>Welcome, {{ user.username }}!</h2>
+    {% endif %}
+    <p>Your personal gardening assistant.</p>
+
+    <hr>
+
+    <h2>What would you like to do?</h2>
+
+    <ul>
+        <li>
+            <a href="/weather/">🌦️ Check Weather</a>
+        </li>
+
+        <li>
+            <a href="/gardening/">🌱 Manage My Plants</a>
+        </li>
+
+        <li>
+            <a href="/accounts/">👤 Account</a>
+        </li>
+        <li>
+            <a href="{% url 'diagnose_plant_health' %}">
+            🩺 Check Plant Health from Photo
+        </a>
+</li>
+    </ul>
+
+</body>
+</html>

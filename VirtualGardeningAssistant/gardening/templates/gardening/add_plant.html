@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add Plant - Virtual Gardening Assistant</title>
+</head>
+<body>
+
+    <h1>🌱 Add a Plant</h1>
+
+    <p>
+        <a href="{% url 'gardening_home' %}">← Back to My Plants</a>
+    </p>
+    <form method="POST">
+        {% csrf_token %}
+
+        {{ form.as_p }}
+
+        <button type="submit">Add Plant</button>
+    </form>
+
+
+</body>
+</html>

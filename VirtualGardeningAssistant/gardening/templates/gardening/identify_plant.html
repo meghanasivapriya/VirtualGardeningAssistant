@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Identify a Plant</title>
+</head>
+<body>
+
+    <h1>🌿 Identify a Plant</h1>
+    <p>Upload a clear photo to find the plant's likely species.</p>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Identify Plant</button>
+    </form>
+
+    {% if error %}
+        <p>{{ error }}</p>
+    {% endif %}
+
+    {% if results %}
+        <h2>Possible Matches</h2>
+
+        {% for item in results %}
+            <section>
+                <h3>{{ item.name }}</h3>
+
+                {% if item.common_names %}
+                    <p>
+                        <strong>Common names:</strong>
+                        {{ item.common_names|join:", " }}
+                    </p>
+                {% endif %}
+
+                <p>
+                    <strong>Identification confidence:</strong>
+                    {{ item.confidence }}%
+                </p>
+            </section>
+            <hr>
+        {% endfor %}
+
+        <p>
+            These are possible matches, not a guaranteed identification.
+        </p>
+    {% endif %}
+
+    <p><a href="{% url 'gardening_home' %}">← Back to My Plants</a></p>
+
+</body>
+</html>
