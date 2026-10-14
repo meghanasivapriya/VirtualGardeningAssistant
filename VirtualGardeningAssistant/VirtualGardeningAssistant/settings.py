@@ -123,6 +123,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+STATICFILES_DIRS = [
+    BASE_DIR / "static",
+]
 
 # Email
 # https://docs.djangoproject.com/en/6.1/topics/email/#topic-email-configuration
@@ -132,6 +135,9 @@ MAILERS = {
         'BACKEND': 'django.core.mail.backends.console.EmailBackend',
     },
 }
+
+MEDIA_URL = '/media/'
+MEDIA_ROOT = BASE_DIR / 'media'
 
 OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY')
 PLANTHEALTHENGINE_API_KEY = os.getenv('PLANTHEALTHENGINE_API_KEY')

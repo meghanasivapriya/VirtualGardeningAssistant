@@ -1,0 +1,100 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile | Virtual Gardening Assistant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #F4F7F0;
+            color: #26382A;
+            margin: 0;
+            padding: 40px 20px;
+        }
+        .profile-card {
+            max-width: 500px;
+            margin: auto;
+            padding: 30px;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 16px #00000012;
+        }
+        h1 { text-align: center; color: #245B38; }
+        .picture {
+            display: block;
+            width: 120px;
+            height: 120px;
+            margin: 20px auto;
+            border-radius: 50%;
+            object-fit: cover;
+            background: #E4EBDD;
+        }
+        .details p { padding: 12px; border-bottom: 1px solid #E4EBDD; }
+        label { font-weight: bold; }
+        input {
+            box-sizing: border-box;
+            max-width: 100%;
+            padding: 10px;
+        }
+        button, .button {
+            display: inline-block;
+            padding: 12px 18px;
+            background: #245B38;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-top: 12px;
+        }
+        .actions { text-align: center; }
+        .message { text-align: center; color: #245B38; }
+        .back { display: block; text-align: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+<div class="profile-card">
+    <h1>My Profile</h1>
+
+    {% if messages %}
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+    {% endif %}
+
+    {% if profile.profile_picture %}
+        <img class="picture" src="{{ profile.profile_picture.url }}" alt="Profile picture">
+    {% else %}
+        <div class="picture" style="display:flex;align-items:center;justify-content:center;">
+            No Photo
+        </div>
+    {% endif %}
+
+    {% if edit_mode %}
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ user_form.as_p }}
+            {{ profile_form.as_p }}
+
+            <div class="actions">
+                <button type="submit">Save Changes</button>
+                <a class="button" href="{% url 'my_profile' %}">Cancel</a>
+            </div>
+        </form>
+    {% else %}
+        <div class="details">
+            <p><label>Username:</label> {{ request.user.username }}</p>
+            <p><label>Email:</label> {{ request.user.email|default:"Not provided" }}</p>
+        </div>
+
+        <div class="actions">
+            <a class="button" href="{% url 'my_profile' %}?edit=true">Update Profile</a>
+        </div>
+    {% endif %}
+
+    <a class="back" href="{% url 'home' %}">Back to Home</a>
+</div>
+</body>
+</html>

@@ -1,51 +1,232 @@
+{% load static %}
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Virtual Gardening Assistant</title>
+
 </head>
-<body>
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-    <h1>🌱 Virtual Gardening Assistant</h1>
+<body style =
+    "background-color: #FFF9F0;
+    color: #26382A;
+    font-family: 'Poppins', sans-serif;
+">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;600;700&family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
+
+<!-- Navigation Bar -->
+<div style="display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;">
+
+    <h1 style="display: flex; align-items: center; gap: 10px; font-family: 'Playfair Display', serif; margin: 0;">
+        <img src="{% static 'pictures/logo.png' %}"
+             alt="Gardening Assistant Logo"
+             style="width: 45px; height: 45px; object-fit: contain; border-radius: 50%;border: 0.5px solid black; border-radius: 50px">
+        Virtual Gardening Assistant
+    </h1>
+
     <div>
         {% if user.is_authenticated %}
-            Welcome, {{ user.username }} |
-            <form method="POST" action="{% url 'logout' %}" style="display: inline;">
-                {% csrf_token %}
-                <button type="submit">Logout</button>
-            </form>
+            <details style="position: relative; display: inline-block;">
+                <summary style="display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none;">
+                    {% if user.profile.profile_picture %}
+                        <img src="{{ user.profile.profile_picture.url }}"
+                             alt="Profile picture"
+                             style="width: 40px; height: 40px; object-fit: cover; border-radius: 50%;">
+                    {% else %}
+                        <span style="width: 40px; height: 40px; border-radius: 50%; background: #E4EBDD; color: #245B38; display: inline-flex; align-items: center; justify-content: center; font-size: 20px;">
+                            {{ user.username|first|upper }}
+                        </span>
+                    {% endif %}
+
+                    <span>Welcome, {{ user.username }}!</span>
+                    <span style="color: #245B38;">▼</span>
+                </summary>
+
+                <div style="position: absolute; right: 0; top: 50px; min-width: 170px; background: white; border: 1px solid #E4EBDD; border-radius: 10px; box-shadow: 0 4px 12px #00000018; padding: 8px; z-index: 1000;">
+                    <a href="{% url 'my_profile' %}"
+                       style="display: block; padding: 12px; color: #26382A; text-decoration: none;">
+                        👤 Update Profile
+                    </a>
+
+                    <form method="POST" action="{% url 'logout' %}">
+                        {% csrf_token %}
+                        <button type="submit"
+                                style="width: 100%; text-align: left; padding: 12px; border: none; background: white; color: #B42318; cursor: pointer; font-size: 15px;">
+                            ↪ Logout
+                        </button>
+                    </form>
+                </div>
+            </details>
         {% else %}
             <a href="{% url 'register' %}">Register</a> |
             <a href="{% url 'login' %}">Login</a>
         {% endif %}
     </div>
+
 </div>
-    {% if user.is_authenticated %}
-        <h2>Welcome, {{ user.username }}!</h2>
-    {% endif %}
-    <p>Your personal gardening assistant.</p>
 
-    <hr>
+<!--    {% if user.is_authenticated %}-->
+<!--        <h2>Welcome, {{ user.username }}!</h2>-->
+<!--    {% endif %}-->
+    <!-- Tulip Video Hero -->
+    <section style="
+        position: relative;
+        width: 100%;
+        height: 700px;
+        overflow: hidden;
+        margin-top: 20px;
+        border-radius: 5px;
+        background: #e8e8e8;
+    ">
+        <video autoplay muted loop playsinline style="
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+        ">
+            <source src="{% static 'videos/tulipvid.mp4' %}" type="video/mp4">
+            Your browser does not support the video element.
+        </video>
 
-    <h2>What would you like to do?</h2>
+        <div style="
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: white;
+            padding: 0px;
+            box-sizing: border-box;
+        ">
+            <h1 style="font-size: 42px; margin-bottom: 10px;">
+                Grow Something Beautiful
+            </h1>
 
-    <ul>
-        <li>
-            <a href="/weather/">🌦️ Check Weather</a>
-        </li>
+            <p style="font-size: 18px; max-width: 600px;">
+                Your personal companion for healthier, happier plants.
+            </p>
 
-        <li>
-            <a href="/gardening/">🌱 Manage My Plants</a>
-        </li>
+            <a href="/gardening/" style="
+                display: inline-block;
+                margin-top: 15px;
+                padding: 12px 26px;
+                background: white;
+                color: #245b38;
+                text-decoration: none;
+                border-radius: 25px;
+                font-weight: bold;
+            ">
+                Explore My Garden
+            </a>
+        </div>
+    </section>
 
-        <li>
-            <a href="/accounts/">👤 Account</a>
-        </li>
-        <li>
-            <a href="{% url 'diagnose_plant_health' %}">
-            🩺 Check Plant Health from Photo
+    <!-- Dashboard Content -->
+<!--    {% if user.is_authenticated %}-->
+<!--        <h2>Welcome, {{ user.username }}!</h2>-->
+<!--    {% endif %}-->
+
+<!-- Gardening Feature Cards -->
+<section style="padding: 45px 25px; background: #FFF9F0;">
+    <h2 style="text-align: center;
+               font-family: 'Playfair Display', serif;
+               font-size: 32px;
+               color: #245B38;
+               margin-bottom: 10px;">
+        Explore Your Garden
+    </h2>
+
+    <p style="text-align: center;
+              color: #657365;
+              font-family: 'Poppins', sans-serif;
+              margin-bottom: 35px;">
+        Everything you need to grow a healthier, happier garden.
+    </p>
+
+    <div style="display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+                gap: 24px;
+                max-width: 1100px;
+                margin: auto;">
+
+        <a href="/weather/" style="text-decoration: none; color: inherit;">
+            <div style="background: white; padding: 28px 24px;
+                        border-radius: 18px; border: 1px solid #E1E8D9;
+                        box-shadow: 0 5px 15px #26382A10;
+                        min-height: 150px; transition: 0.2s;">
+                <div style="font-size: 38px; margin-bottom: 16px;">🌦️</div>
+                <h3 style="font-family: 'Playfair Display', serif;
+                           color: #245B38; margin: 0 0 10px;">
+                    Check Weather
+                </h3>
+                <p style="font-family: 'Poppins', sans-serif;
+                          font-size: 14px; line-height: 1.7; color: #657365;">
+                    Check local weather conditions to plan your plant care.
+                </p>
+                <span style="color: #245B38; font-weight: 600;">Explore →</span>
+            </div>
         </a>
-</li>
-    </ul>
 
+        <a href="/gardening/" style="text-decoration: none; color: inherit;">
+            <div style="background: white; padding: 28px 24px;
+                        border-radius: 18px; border: 1px solid #E1E8D9;
+                        box-shadow: 0 5px 15px #26382A10;
+                        min-height: 150px;">
+                <div style="font-size: 38px; margin-bottom: 16px;">🌱</div>
+                <h3 style="font-family: 'Playfair Display', serif;
+                           color: #245B38; margin: 0 0 10px;">
+                    Manage My Plants
+                </h3>
+                <p style="font-family: 'Poppins', sans-serif;
+                          font-size: 14px; line-height: 1.7; color: #657365;">
+                    Organize your plants and keep track of your garden.
+                </p>
+                <span style="color: #245B38; font-weight: 600;">Explore →</span>
+            </div>
+        </a>
+
+        <a href="{% url 'my_profile' %}" style="text-decoration: none; color: inherit;">
+            <div style="background: white; padding: 28px 24px;
+                        border-radius: 18px; border: 1px solid #E1E8D9;
+                        box-shadow: 0 5px 15px #26382A10;
+                        min-height: 150px;">
+                <div style="font-size: 38px; margin-bottom: 16px;">👤</div>
+                <h3 style="font-family: 'Playfair Display', serif;
+                           color: #245B38; margin: 0 0 10px;">
+                    My Account
+                </h3>
+                <p style="font-family: 'Poppins', sans-serif;
+                          font-size: 14px; line-height: 1.7; color: #657365;">
+                    View your account details and update your profile.
+                </p>
+                <span style="color: #245B38; font-weight: 600;">Explore →</span>
+            </div>
+        </a>
+
+        <a href="/gardening/diagnose/" style="text-decoration: none; color: inherit;">
+            <div style="background: white; padding: 28px 24px;
+                        border-radius: 18px; border: 1px solid #E1E8D9;
+                        box-shadow: 0 5px 15px #26382A10;
+                        min-height: 150px;">
+                <div style="font-size: 38px; margin-bottom: 16px;">🩺</div>
+                <h3 style="font-family: 'Playfair Display', serif;
+                           color: #245B38; margin: 0 0 10px;">
+                    Check Plant Health
+                </h3>
+                <p style="font-family: 'Poppins', sans-serif;
+                          font-size: 14px; line-height: 1.7; color: #657365;">
+                    Upload a plant photo to help identify possible health problems.
+                </p>
+                <span style="color: #245B38; font-weight: 600;">Explore →</span>
+            </div>
+        </a>
+
+    </div>
+</section>
 </body>
 </html>
